@@ -3,6 +3,7 @@ package com.MonsterShop.MS.entity;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "products")
@@ -13,17 +14,17 @@ public class Product {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    String name;
+    private String name;
 
-    double price;
+    private double price;
 
-    String imageUrl;
+    private String imageUrl;
 
-    double rating;
+    private double rating;
 
-    int reviewCount;
+    private int reviewCount;
 
-    boolean featured;
+    private boolean featured;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductReview> productReviews = new ArrayList<>();
