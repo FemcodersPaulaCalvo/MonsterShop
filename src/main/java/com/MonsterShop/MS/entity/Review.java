@@ -3,7 +3,10 @@ package com.MonsterShop.MS.entity;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
+@Entity
+@Table(name = "reviews")
 public class Review {
 
     @Id
