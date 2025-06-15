@@ -12,11 +12,10 @@ import java.util.List;
 public class ProductService {
 
     private final ProductRepository PRODUCT_REPOSITORY;
-    private final ReviewService REVIEW_SERVICE;
+//    private final ReviewService REVIEW_SERVICE;
 
-    public ProductService(ProductRepository PRODUCT_REPOSITORY, ReviewService REVIEW_SERVICE) {
+    public ProductService(ProductRepository PRODUCT_REPOSITORY) {
         this.PRODUCT_REPOSITORY = PRODUCT_REPOSITORY;
-        this.REVIEW_SERVICE = REVIEW_SERVICE;
     }
 
     //  GET ALL PRODUCTS
