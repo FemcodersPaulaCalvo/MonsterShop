@@ -1,4 +1,33 @@
 package com.MonsterShop.MS.service;
 
+import com.MonsterShop.MS.dto.product.MapperProductDto;
+import com.MonsterShop.MS.dto.product.ResponseProductDto;
+import com.MonsterShop.MS.entity.Product;
+import com.MonsterShop.MS.repository.ProductRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
 public class ProductService {
+
+    private final ProductRepository PRODUCT_REPOSITORY;
+    private final ReviewService REVIEW_SERVICE;
+
+    public ProductService(ProductRepository PRODUCT_REPOSITORY, ReviewService REVIEW_SERVICE) {
+        this.PRODUCT_REPOSITORY = PRODUCT_REPOSITORY;
+        this.REVIEW_SERVICE = REVIEW_SERVICE;
+    }
+
+    //  GET ALL PRODUCTS
+    public List<ResponseProductDto> getAllProducts() {
+        List<Product> products = PRODUCT_REPOSITORY.findAll();
+        if (products.isEmpty()){
+            throw new RuntimeException("Empty list");
+        }
+
+        return products.stream()
+                .map(product -> MapperProductDto.fromEntity(product))
+                .toList();
+    }
 }
