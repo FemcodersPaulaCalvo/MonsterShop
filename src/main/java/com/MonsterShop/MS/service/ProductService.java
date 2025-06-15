@@ -52,4 +52,23 @@ public class ProductService {
         Product savedProduct = PRODUCT_REPOSITORY.save(newProduct);
         return MapperProductDto.fromEntity(savedProduct);
     }
+
+    //  UPDATE A PRODUCT BY ID
+    public ResponseProductDto updateNewProduct(Long id, RequestProductDto requestProductDto){
+        Product isExisting = PRODUCT_REPOSITORY.findById(id)
+                .orElseThrow(() ->  new RuntimeException("Id not found"));
+        isExisting.setName(requestProductDto.name());
+        isExisting.setPrice(requestProductDto.price());
+        isExisting.setImageUrl(requestProductDto.imageUrl());
+        isExisting.setFeatured(requestProductDto.featured());
+
+        Optional<Product> productByName = PRODUCT_REPOSITORY.findByName(requestProductDto.name());
+        if (productByName.isPresent()){
+            throw new RuntimeException("This monster already exist: " + productByName.get().getName());
+        }
+
+        Product updatedProduct = PRODUCT_REPOSITORY.save(isExisting);
+        return MapperProductDto.fromEntity(isExisting);
+
+    }
 }
