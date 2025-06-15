@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 public class MapperProductDto{
 
     public static Product toEntity (RequestProductDto productDto){
-        retun new Product(productDto.name(), productDto.price(), productDto.imageUrl(), productDto.featured());
+        return new Product(productDto.name(), productDto.price(), productDto.imageUrl(), productDto.featured());
     }
 
     public static ResponseProductDto fromEntity(Product product){
