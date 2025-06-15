@@ -71,4 +71,11 @@ public class ProductService {
         return MapperProductDto.fromEntity(isExisting);
 
     }
+
+    //  DELETE PRODUCT BY ID
+    public void deleteProductById(Long id){
+        Product isExisting = PRODUCT_REPOSITORY.findById(id)
+                .orElseThrow(() ->  new RuntimeException("Id not found"));
+        PRODUCT_REPOSITORY.deleteById(id);
+    }
 }
