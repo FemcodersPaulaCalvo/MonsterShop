@@ -5,6 +5,9 @@ import com.MonsterShop.MS.dto.product.RequestProductDto;
 import com.MonsterShop.MS.dto.product.ResponseProductDto;
 import com.MonsterShop.MS.entity.Product;
 import com.MonsterShop.MS.entity.ProductReview;
+import com.MonsterShop.MS.exceptions.EmptyListException;
+import com.MonsterShop.MS.exceptions.NoIdProductFoundException;
+import com.MonsterShop.MS.exceptions.ProductAlreadyExistException;
 import com.MonsterShop.MS.repository.ProductRepository;
 import com.MonsterShop.MS.repository.ProductReviewRepository;
 import org.springframework.stereotype.Service;
@@ -27,7 +30,7 @@ public class ProductService {
     public List<ResponseProductDto> getAllProducts() {
         List<Product> products = PRODUCT_REPOSITORY.findAll();
         if (products.isEmpty()){
-            throw new RuntimeException("Empty list");
+            throw new EmptyListException();
         }
 
         return products.stream()
@@ -38,7 +41,7 @@ public class ProductService {
     //  GET PRODUCT BY ID
     public ResponseProductDto getProductById(Long id){
         Product productById = PRODUCT_REPOSITORY.findById(id)
-                .orElseThrow(() ->  new RuntimeException("Id not found"));
+                .orElseThrow(() ->  new NoIdProductFoundException(id));
 
         return MapperProductDto.fromEntity(productById);
 
@@ -48,7 +51,7 @@ public class ProductService {
     public ResponseProductDto createNewProduct(RequestProductDto requestProductDto){
         Optional<Product> productByName = PRODUCT_REPOSITORY.findByName(requestProductDto.name());
         if (productByName.isPresent()){
-            throw new RuntimeException("This monster already exist: " + productByName.get().getName());
+            throw new ProductAlreadyExistException(productByName.get().getName(), productByName.get().getPrice(), productByName.get().getId());
         }
         Product newProduct = MapperProductDto.toEntity(requestProductDto);
         Product savedProduct = PRODUCT_REPOSITORY.save(newProduct);
@@ -58,7 +61,7 @@ public class ProductService {
     //  UPDATE A PRODUCT BY ID
     public ResponseProductDto updateNewProduct(Long id, RequestProductDto requestProductDto){
         Product isExisting = PRODUCT_REPOSITORY.findById(id)
-                .orElseThrow(() ->  new RuntimeException("Id not found"));
+                .orElseThrow(() ->  new NoIdProductFoundException(id));
         isExisting.setName(requestProductDto.name());
         isExisting.setPrice(requestProductDto.price());
         isExisting.setImageUrl(requestProductDto.imageUrl());
@@ -66,7 +69,7 @@ public class ProductService {
 
         Optional<Product> productByName = PRODUCT_REPOSITORY.findByName(requestProductDto.name());
         if (productByName.isPresent()){
-            throw new RuntimeException("This monster already exist: " + productByName.get().getName());
+            throw new ProductAlreadyExistException(productByName.get().getName(), productByName.get().getPrice(), productByName.get().getId());
         }
 
         return MapperProductDto.fromEntity(isExisting);
@@ -76,7 +79,7 @@ public class ProductService {
     //  UPDATE PRODUCT REVIEW STATS
     public ResponseProductDto updateProductReviewStats(ResponseProductDto productDto) {
         Product isExisting = PRODUCT_REPOSITORY.findById(productDto.id())
-                .orElseThrow(() ->  new RuntimeException("Id not found"));
+                .orElseThrow(() ->  new NoIdProductFoundException(productDto.id()));
         List<ProductReview> reviews = PRODUCT_REVIEW_REPOSITORY.findAllByProductId(productDto.id());
         int updatedReviewCount = reviews.size();
         double averageRating = reviews.stream()
@@ -94,7 +97,7 @@ public class ProductService {
     //  DELETE PRODUCT BY ID
     public void deleteProductById(Long id){
         Product isExisting = PRODUCT_REPOSITORY.findById(id)
-                .orElseThrow(() ->  new RuntimeException("Id not found"));
+                .orElseThrow(() ->  new NoIdProductFoundException(id));
         PRODUCT_REPOSITORY.deleteById(id);
     }
 
