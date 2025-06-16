@@ -86,6 +86,7 @@ public class ProductService {
 
         isExisting.setReviewCount(updatedReviewCount);
         isExisting.setRating(averageRating);
+        PRODUCT_REPOSITORY.save(isExisting);
         return MapperProductDto.fromEntity(isExisting);
     }
 
