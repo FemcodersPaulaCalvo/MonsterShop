@@ -5,6 +5,8 @@ import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
 public record RequestReviewDto(
+        Long id,
+
         @NotBlank(message = "Username is required")
         @Size(min = 2, max = 50, message = "Username must contain min 2 and max 50 characters")
         String username,
