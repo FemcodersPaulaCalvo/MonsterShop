@@ -7,6 +7,8 @@ import com.MonsterShop.MS.dto.review.ResponseReviewDto;
 import com.MonsterShop.MS.entity.Product;
 import com.MonsterShop.MS.entity.ProductReview;
 import com.MonsterShop.MS.entity.Review;
+import com.MonsterShop.MS.exceptions.EmptyListException;
+import com.MonsterShop.MS.exceptions.NoIdProductFoundException;
 import com.MonsterShop.MS.repository.ProductRepository;
 import com.MonsterShop.MS.repository.ProductReviewRepository;
 import com.MonsterShop.MS.repository.ReviewRepository;
@@ -32,19 +34,24 @@ public class ReviewService {
     //  GET REVIEWS BY A PRODUCT ID
     public List<ResponseReviewDto> getAllReviewsByProductId(Long productId){
         Product isExistingProduct = PRODUCT_REPOSITORY.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Id not found"));
+                .orElseThrow(() -> new NoIdProductFoundException(productId));
 
         return isExistingProduct.getProductReviews()
                 .stream()
                 .map(ProductReview::getReview)
-                .map(review -> MapperReviewDto.fromEntity(review))
+                .map(review -> {
+                    if (review == null) {
+                        throw new EmptyListException();
+                    }
+                    return MapperReviewDto.fromEntity(review);
+                })
                 .toList();
     }
 
     //  POST NEW REVIEW BY A PRODUCT
     public ResponseReviewDto postNewReviewByProductId(Long productId, RequestReviewDto reviewDto){
         Product isExistingProduct = PRODUCT_REPOSITORY.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Id not found"));
+                .orElseThrow(() -> new NoIdProductFoundException(productId));
         Review newReview = MapperReviewDto.toEntity(reviewDto);
         Review newReviewNoId = new Review(newReview.getUsername(),newReview.getRating(),newReview.getBody());
         Review review = REVIEW_REPOSITORY.save(newReviewNoId);
