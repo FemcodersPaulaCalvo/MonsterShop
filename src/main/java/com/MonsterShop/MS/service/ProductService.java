@@ -6,6 +6,7 @@ import com.MonsterShop.MS.dto.product.ResponseProductDto;
 import com.MonsterShop.MS.entity.Product;
 import com.MonsterShop.MS.entity.ProductReview;
 import com.MonsterShop.MS.repository.ProductRepository;
+import com.MonsterShop.MS.repository.ProductReviewRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,10 +16,11 @@ import java.util.Optional;
 public class ProductService {
 
     private final ProductRepository PRODUCT_REPOSITORY;
-//    private final ReviewService REVIEW_SERVICE;
+    private final ProductReviewRepository PRODUCT_REVIEW_REPOSITORY;
 
-    public ProductService(ProductRepository PRODUCT_REPOSITORY) {
+    public ProductService(ProductRepository PRODUCT_REPOSITORY, ProductReviewRepository PRODUCT_REVIEW_REPOSITORY) {
         this.PRODUCT_REPOSITORY = PRODUCT_REPOSITORY;
+        this.PRODUCT_REVIEW_REPOSITORY = PRODUCT_REVIEW_REPOSITORY;
     }
 
     //  GET ALL PRODUCTS
@@ -67,10 +69,26 @@ public class ProductService {
             throw new RuntimeException("This monster already exist: " + productByName.get().getName());
         }
 
-        Product updatedProduct = PRODUCT_REPOSITORY.save(isExisting);
         return MapperProductDto.fromEntity(isExisting);
 
     }
+
+    //  UPDATE PRODUCT REVIEW STATS
+    public ResponseProductDto updateProductReviewStats(ResponseProductDto productDto) {
+        Product isExisting = PRODUCT_REPOSITORY.findById(productDto.id())
+                .orElseThrow(() ->  new RuntimeException("Id not found"));
+        List<ProductReview> reviews = PRODUCT_REVIEW_REPOSITORY.findAllByProductId(productDto.id());
+        int updatedReviewCount = reviews.size();
+        double averageRating = reviews.stream()
+                .mapToDouble(pr -> pr.getReview().getRating())
+                .average()
+                .orElse(0.0);
+
+        isExisting.setReviewCount(updatedReviewCount);
+        isExisting.setRating(averageRating);
+        return MapperProductDto.fromEntity(isExisting);
+    }
+
 
     //  DELETE PRODUCT BY ID
     public void deleteProductById(Long id){
@@ -78,4 +96,5 @@ public class ProductService {
                 .orElseThrow(() ->  new RuntimeException("Id not found"));
         PRODUCT_REPOSITORY.deleteById(id);
     }
+
 }

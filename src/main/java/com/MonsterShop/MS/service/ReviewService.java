@@ -1,5 +1,6 @@
 package com.MonsterShop.MS.service;
 
+import com.MonsterShop.MS.dto.product.MapperProductDto;
 import com.MonsterShop.MS.dto.review.MapperReviewDto;
 import com.MonsterShop.MS.dto.review.RequestReviewDto;
 import com.MonsterShop.MS.dto.review.ResponseReviewDto;
@@ -50,7 +51,7 @@ public class ReviewService {
         ProductReview newProductreview = new ProductReview(isExistingProduct, newReview);
 
         PRODUCT_REVIEW_REPOSITORY.save(newProductreview);
-        PRODUCT_SERVICE.updateProductReviewStats(isExistingProduct);
+        PRODUCT_SERVICE.updateProductReviewStats(MapperProductDto.fromEntity(isExistingProduct));
 
         return MapperReviewDto.fromEntity(review);
 
