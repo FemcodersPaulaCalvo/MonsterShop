@@ -29,6 +29,14 @@ public class Review {
         this.body = body;
     }
 
+    public Review(Long id, String username, double rating, String body) {
+        this.id = id;
+        this.username = username;
+        this.rating = rating;
+        this.body = body;
+    }
+
+
     public Review() {
     }
 
