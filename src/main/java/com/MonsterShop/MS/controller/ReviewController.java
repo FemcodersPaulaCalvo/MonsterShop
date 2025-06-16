@@ -1,13 +1,11 @@
 package com.MonsterShop.MS.controller;
 
+import com.MonsterShop.MS.dto.review.RequestReviewDto;
 import com.MonsterShop.MS.dto.review.ResponseReviewDto;
 import com.MonsterShop.MS.service.ReviewService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,4 +23,11 @@ public class ReviewController {
         List<ResponseReviewDto> reviews = REVIEW_SERVICE.getAllReviewsByProductId(id);
         return new ResponseEntity<>(reviews, HttpStatus.OK);
     }
+
+    @PostMapping
+    public ResponseEntity<ResponseReviewDto> postNewReviewByProduct(@RequestBody RequestReviewDto reviewDto){
+        ResponseReviewDto newReview = REVIEW_SERVICE.postNewReviewByProductId(reviewDto.id(), reviewDto);
+        return new ResponseEntity<>(newReview, HttpStatus.CREATED);
+    }
+
 }
