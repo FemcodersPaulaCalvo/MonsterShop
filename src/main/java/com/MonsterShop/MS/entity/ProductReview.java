@@ -22,6 +22,11 @@ public class ProductReview {
     public ProductReview() {
     }
 
+    public ProductReview(Product product, Review review) {
+        this.product = product;
+        this.review = review;
+    }
+
     public Long getId() {
         return id;
     }
