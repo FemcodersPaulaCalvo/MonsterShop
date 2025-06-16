@@ -38,8 +38,14 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseProductDto> updateProduct(@PathVariable Long id,@RequestBody RequestProductDto requestProductDto){
+    public ResponseEntity<ResponseProductDto> updateProductById(@PathVariable Long id,@RequestBody RequestProductDto requestProductDto){
         ResponseProductDto updatedProduct = PRODUCT_SERVICE.updateNewProduct(id, requestProductDto);
         return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteProductById(@PathVariable Long id){
+        PRODUCT_SERVICE.deleteProductById(id);
+        return new ResponseEntity<>("Monster with id " + id + " has been deleted", HttpStatus.NO_CONTENT);
     }
 }
