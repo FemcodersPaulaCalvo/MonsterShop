@@ -46,9 +46,10 @@ public class ReviewService {
         Product isExistingProduct = PRODUCT_REPOSITORY.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Id not found"));
         Review newReview = MapperReviewDto.toEntity(reviewDto);
-        Review review = REVIEW_REPOSITORY.save(newReview);
+        Review newReviewNoId = new Review(newReview.getUsername(),newReview.getRating(),newReview.getBody());
+        Review review = REVIEW_REPOSITORY.save(newReviewNoId);
 
-        ProductReview newProductreview = new ProductReview(isExistingProduct, newReview);
+        ProductReview newProductreview = new ProductReview(isExistingProduct, newReviewNoId);
 
         PRODUCT_REVIEW_REPOSITORY.save(newProductreview);
         PRODUCT_SERVICE.updateProductReviewStats(MapperProductDto.fromEntity(isExistingProduct));
@@ -56,4 +57,5 @@ public class ReviewService {
         return MapperReviewDto.fromEntity(review);
 
     }
+
 }
