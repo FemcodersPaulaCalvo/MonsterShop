@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MapperProductReviewDto {
     public static ProductReview toEntity(RequestProductReviewDto productReviewDto){
-        return new ProductReview(productReviewDto.id_product(), productReviewDto.id_review());
+        return new ProductReview(productReviewDto.product(), productReviewDto.review());
     }
 
     public static ResponseProductReviewDto fromEntity(ProductReview productReview){
