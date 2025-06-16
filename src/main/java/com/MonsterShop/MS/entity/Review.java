@@ -23,6 +23,12 @@ public class Review {
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductReview> productReviews = new ArrayList<>();
 
+    public Review(String username, double rating, String body) {
+        this.username = username;
+        this.rating = rating;
+        this.body = body;
+    }
+
     public Review() {
     }
 
