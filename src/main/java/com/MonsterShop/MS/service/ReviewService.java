@@ -5,6 +5,7 @@ import com.MonsterShop.MS.dto.review.ResponseReviewDto;
 import com.MonsterShop.MS.entity.Product;
 import com.MonsterShop.MS.entity.ProductReview;
 import com.MonsterShop.MS.repository.ProductRepository;
+import com.MonsterShop.MS.repository.ReviewRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,11 +14,11 @@ import java.util.List;
 public class ReviewService {
 
     private final ProductRepository PRODUCT_REPOSITORY;
-    private final ReviewService REVIEW_SERVICE;
+    private final ReviewRepository REVIEW_REPOSITORY;
 
-    public ReviewService(ProductRepository PRODUCT_REPOSITORY, ReviewService REVIEW_SERVICE) {
+    public ReviewService(ProductRepository PRODUCT_REPOSITORY, ReviewRepository REVIEW_REPOSITORY) {
         this.PRODUCT_REPOSITORY = PRODUCT_REPOSITORY;
-        this.REVIEW_SERVICE = REVIEW_SERVICE;
+        this.REVIEW_REPOSITORY = REVIEW_REPOSITORY;
     }
 
     //  GET REVIEWS BY A PRODUCT ID
