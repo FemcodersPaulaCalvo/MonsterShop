@@ -1,5 +1,6 @@
 package com.MonsterShop.MS.dto.review;
 
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
@@ -12,7 +13,7 @@ public record RequestReviewDto(
         String username,
 
         @PositiveOrZero(message = "The number entered must be positive or zero")
-        @NotBlank(message = "Rating is required")
+        @Max(5)
         double rating,
 
         @NotBlank(message = "The body is required")
