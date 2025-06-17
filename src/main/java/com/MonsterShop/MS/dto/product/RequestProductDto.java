@@ -10,14 +10,12 @@ public record RequestProductDto(
         String name,
 
         @Positive(message = "The number entered must be positive")
-        @NotBlank(message = "Price is required")
         double price,
 
         @NotBlank(message = "The url image is required")
         @Size(min = 2, message = "Name must contain min 2")
         String imageUrl,
 
-        @NotBlank(message = "Featured is required")
         boolean featured
 ) {
 }

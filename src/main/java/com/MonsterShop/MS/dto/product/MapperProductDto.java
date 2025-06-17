@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 public class MapperProductDto{
 
     public static Product toEntity (RequestProductDto productDto){
+        boolean featured = productDto.featured() ? true : productDto.featured();
         return new Product(productDto.name(), productDto.price(), productDto.imageUrl(), productDto.featured());
     }
 

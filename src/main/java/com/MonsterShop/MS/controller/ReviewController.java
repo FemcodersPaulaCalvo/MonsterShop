@@ -3,6 +3,7 @@ package com.MonsterShop.MS.controller;
 import com.MonsterShop.MS.dto.review.RequestReviewDto;
 import com.MonsterShop.MS.dto.review.ResponseReviewDto;
 import com.MonsterShop.MS.service.ReviewService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class ReviewController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseReviewDto> postNewReviewByProduct(@RequestBody RequestReviewDto reviewDto){
+    public ResponseEntity<ResponseReviewDto> postNewReviewByProduct(@Valid @RequestBody RequestReviewDto reviewDto){
         ResponseReviewDto newReview = REVIEW_SERVICE.postNewReviewByProductId(reviewDto.id(), reviewDto);
         return new ResponseEntity<>(newReview, HttpStatus.CREATED);
     }
