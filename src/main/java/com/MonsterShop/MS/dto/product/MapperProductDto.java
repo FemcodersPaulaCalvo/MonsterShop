@@ -1,7 +1,13 @@
 package com.MonsterShop.MS.dto.product;
 
+import com.MonsterShop.MS.dto.review.MapperReviewDto;
+import com.MonsterShop.MS.dto.review.ResponseReviewDto;
 import com.MonsterShop.MS.entity.Product;
+import com.MonsterShop.MS.entity.ProductReview;
+import com.MonsterShop.MS.exceptions.EmptyListException;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class MapperProductDto{
@@ -12,6 +18,12 @@ public class MapperProductDto{
     }
 
     public static ResponseProductDto fromEntity(Product product){
-        return new ResponseProductDto(product.getId(), product.getName(), product.getPrice(), product.getImageUrl(), product.getRating(), product.getReviewCount(), product.isFeatured());
+        List<ResponseReviewDto> rating = product.getProductReviews()
+                .stream()
+                .map(ProductReview::getReview)
+                .map(review ->  MapperReviewDto.fromEntity(review))
+                .toList();
+
+        return new ResponseProductDto(product.getId(), product.getName(), product.getPrice(), product.getImageUrl(), product.getRating(), product.getReviewCount(), product.isFeatured(), rating);
     }
 }
