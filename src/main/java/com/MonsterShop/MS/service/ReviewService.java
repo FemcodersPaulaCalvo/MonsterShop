@@ -35,7 +35,6 @@ public class ReviewService {
     public List<ResponseReviewDto> getAllReviewsByProductId(Long productId){
         Product isExistingProduct = PRODUCT_REPOSITORY.findById(productId)
                 .orElseThrow(() -> new NoIdProductFoundException(productId));
-
         return isExistingProduct.getProductReviews()
                 .stream()
                 .map(ProductReview::getReview)
@@ -59,7 +58,7 @@ public class ReviewService {
         ProductReview newProductreview = new ProductReview(isExistingProduct, newReviewNoId);
 
         PRODUCT_REVIEW_REPOSITORY.save(newProductreview);
-        PRODUCT_SERVICE.updateProductReviewStats(MapperProductDto.fromEntity(isExistingProduct));
+        Product updateProduct = PRODUCT_SERVICE.updateProductReviewStats(productId);
 
         return MapperReviewDto.fromEntity(review);
 

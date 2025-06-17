@@ -25,15 +25,15 @@ public class Product {
     private String imageUrl;
 
     @Column(name = "rating", nullable = false)
-    private double rating = 0.0;
+    private double rating;
 
     @Column(name = "review_count", nullable = false)
-    private int reviewCount = 0;
+    private int reviewCount;
 
     @NotNull
     private boolean featured;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ProductReview> productReviews = new ArrayList<>();
 
     public Product() {

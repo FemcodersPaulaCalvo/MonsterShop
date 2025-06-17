@@ -12,6 +12,8 @@ import com.MonsterShop.MS.repository.ProductRepository;
 import com.MonsterShop.MS.repository.ProductReviewRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Optional;
 
@@ -77,20 +79,22 @@ public class ProductService {
     }
 
     //  UPDATE PRODUCT REVIEW STATS
-    public ResponseProductDto updateProductReviewStats(ResponseProductDto productDto) {
-        Product isExisting = PRODUCT_REPOSITORY.findById(productDto.id())
-                .orElseThrow(() ->  new NoIdProductFoundException(productDto.id()));
-        List<ProductReview> reviews = PRODUCT_REVIEW_REPOSITORY.findAllByProductId(productDto.id());
+    public Product updateProductReviewStats(Long productId) {
+        Product isExisting = PRODUCT_REPOSITORY.findById(productId)
+                .orElseThrow(() ->  new NoIdProductFoundException(productId));
+        List<ProductReview> reviews = PRODUCT_REVIEW_REPOSITORY.findAllByProductId(productId);
         int updatedReviewCount = reviews.size();
         double averageRating = reviews.stream()
                 .mapToDouble(pr -> pr.getReview().getRating())
                 .average()
                 .orElse(0.0);
 
+        averageRating = Math.round(averageRating * 100.0) / 100.0;
+
         isExisting.setReviewCount(updatedReviewCount);
         isExisting.setRating(averageRating);
-        PRODUCT_REPOSITORY.save(isExisting);
-        return MapperProductDto.fromEntity(isExisting);
+
+        return PRODUCT_REPOSITORY.save(isExisting);
     }
 
 
