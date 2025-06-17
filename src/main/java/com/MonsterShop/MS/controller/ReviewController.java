@@ -27,7 +27,7 @@ public class ReviewController {
 
     @PostMapping
     public ResponseEntity<ResponseReviewDto> postNewReviewByProduct(@Valid @RequestBody RequestReviewDto reviewDto){
-        ResponseReviewDto newReview = REVIEW_SERVICE.postNewReviewByProductId(reviewDto.id(), reviewDto);
+        ResponseReviewDto newReview = REVIEW_SERVICE.postNewReviewByProductId(reviewDto.productId(), reviewDto);
         return new ResponseEntity<>(newReview, HttpStatus.CREATED);
     }
 
