@@ -9,6 +9,7 @@ public record ResponseProductDto(
         String name,
         double price,
         String imageUrl,
+        String description,
         double rating,
         int reviewCount,
         boolean featured,

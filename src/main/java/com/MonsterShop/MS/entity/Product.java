@@ -24,6 +24,9 @@ public class Product {
     @NotNull
     private String imageUrl;
 
+    @NotNull
+    private String description;
+
     @Column(name = "rating", nullable = false)
     private double rating;
 
@@ -39,10 +42,11 @@ public class Product {
     public Product() {
     }
 
-    public Product(String name, double price, String imageUrl, boolean featured) {
+    public Product(String name, double price, String imageUrl, String description, boolean featured) {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
+        this.description = description;
         this.featured = featured;
     }
 
@@ -60,6 +64,10 @@ public class Product {
 
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public double getRating() {
@@ -88,6 +96,10 @@ public class Product {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public void setRating(double rating) {

@@ -4,7 +4,6 @@ import com.MonsterShop.MS.dto.review.MapperReviewDto;
 import com.MonsterShop.MS.dto.review.ResponseReviewDto;
 import com.MonsterShop.MS.entity.Product;
 import com.MonsterShop.MS.entity.ProductReview;
-import com.MonsterShop.MS.exceptions.EmptyListException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,7 +13,7 @@ public class MapperProductDto{
 
     public static Product toEntity (RequestProductDto productDto){
         boolean featured = productDto.featured() ? true : productDto.featured();
-        return new Product(productDto.name(), productDto.price(), productDto.imageUrl(), productDto.featured());
+        return new Product(productDto.name(), productDto.price(), productDto.imageUrl(), productDto.description(), productDto.featured());
     }
 
     public static ResponseProductDto fromEntity(Product product){
@@ -24,6 +23,6 @@ public class MapperProductDto{
                 .map(review ->  MapperReviewDto.fromEntity(review))
                 .toList();
 
-        return new ResponseProductDto(product.getId(), product.getName(), product.getPrice(), product.getImageUrl(), product.getRating(), product.getReviewCount(), product.isFeatured(), rating);
+        return new ResponseProductDto(product.getId(), product.getName(), product.getPrice(), product.getImageUrl(), product.getDescription(), product.getRating(), product.getReviewCount(), product.isFeatured(), rating);
     }
 }

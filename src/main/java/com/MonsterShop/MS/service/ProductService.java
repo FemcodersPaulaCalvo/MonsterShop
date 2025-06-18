@@ -12,8 +12,6 @@ import com.MonsterShop.MS.repository.ProductRepository;
 import com.MonsterShop.MS.repository.ProductReviewRepository;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 import java.util.Optional;
 
@@ -67,6 +65,7 @@ public class ProductService {
         isExisting.setName(requestProductDto.name());
         isExisting.setPrice(requestProductDto.price());
         isExisting.setImageUrl(requestProductDto.imageUrl());
+        isExisting.setDescription(requestProductDto.description());
         isExisting.setFeatured(requestProductDto.featured());
 
         Optional<Product> productByName = PRODUCT_REPOSITORY.findByName(requestProductDto.name());

@@ -16,6 +16,10 @@ public record RequestProductDto(
         @Size(min = 2, message = "Name must contain min 2")
         String imageUrl,
 
+        @NotBlank(message = "The description is required")
+        @Size(min = 2, message = "Description must contain min 2")
+        String description,
+
         boolean featured
 ) {
 }
