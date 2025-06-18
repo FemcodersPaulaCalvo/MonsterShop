@@ -73,6 +73,7 @@ public class ProductService {
             throw new ProductAlreadyExistException(productByName.get().getName(), productByName.get().getPrice(), productByName.get().getId());
         }
 
+        PRODUCT_REPOSITORY.save(isExisting);
         return MapperProductDto.fromEntity(isExisting);
 
     }
