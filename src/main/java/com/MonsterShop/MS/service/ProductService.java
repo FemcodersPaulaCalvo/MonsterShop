@@ -40,8 +40,7 @@ public class ProductService {
 
     //  GET PRODUCT BY ID
     public ResponseProductDto getProductById(Long id){
-        Product productById = PRODUCT_REPOSITORY.findById(id)
-                .orElseThrow(() ->  new NoIdProductFoundException(id));
+        Product productById = validateProductIdExist(id);
 
         return MapperProductDto.fromEntity(productById);
 
@@ -50,9 +49,7 @@ public class ProductService {
     //  POST NEW PRODUCT
     public ResponseProductDto createNewProduct(RequestProductDto requestProductDto){
         Optional<Product> productByName = PRODUCT_REPOSITORY.findByName(requestProductDto.name());
-        if (productByName.isPresent()){
-            throw new ProductAlreadyExistException(productByName.get().getName(), productByName.get().getPrice(), productByName.get().getId());
-        }
+        validateProductNameDoesNotExist(productByName);
         Product newProduct = MapperProductDto.toEntity(requestProductDto);
         Product savedProduct = PRODUCT_REPOSITORY.save(newProduct);
         return MapperProductDto.fromEntity(savedProduct);
@@ -60,29 +57,57 @@ public class ProductService {
 
     //  UPDATE A PRODUCT BY ID
     public ResponseProductDto updateNewProduct(Long id, RequestProductDto requestProductDto){
-        Product isExisting = PRODUCT_REPOSITORY.findById(id)
-                .orElseThrow(() ->  new NoIdProductFoundException(id));
-        isExisting.setName(requestProductDto.name());
-        isExisting.setPrice(requestProductDto.price());
-        isExisting.setImageUrl(requestProductDto.imageUrl());
-        isExisting.setDescription(requestProductDto.description());
-        isExisting.setFeatured(requestProductDto.featured());
+        Product isExisting = validateProductIdExist(id);
+        changeExistingProduct(requestProductDto, isExisting);
 
         Optional<Product> productByName = PRODUCT_REPOSITORY.findByName(requestProductDto.name());
-        if (productByName.isPresent()){
-            throw new ProductAlreadyExistException(productByName.get().getName(), productByName.get().getPrice(), productByName.get().getId());
-        }
+        validateProductNameDoesNotExist(productByName);
 
         PRODUCT_REPOSITORY.save(isExisting);
         return MapperProductDto.fromEntity(isExisting);
 
     }
 
+
+
     //  UPDATE PRODUCT REVIEW STATS
     public Product updateProductReviewStats(Long productId) {
-        Product isExisting = PRODUCT_REPOSITORY.findById(productId)
-                .orElseThrow(() ->  new NoIdProductFoundException(productId));
+        Product isExisting = validateProductIdExist(productId);
         List<ProductReview> reviews = PRODUCT_REVIEW_REPOSITORY.findAllByProductId(productId);
+        changeRatingReviewCount(reviews, isExisting);
+
+        return PRODUCT_REPOSITORY.save(isExisting);
+    }
+
+    //  DELETE PRODUCT BY ID
+    public void deleteProductById(Long id){
+        validateProductIdExist(id);
+        PRODUCT_REPOSITORY.deleteById(id);
+    }
+
+
+    //  HELPER METHODS
+    private Product validateProductIdExist(Long id) {
+        Product productById = PRODUCT_REPOSITORY.findById(id)
+                .orElseThrow(() ->  new NoIdProductFoundException(id));
+        return productById;
+    }
+
+    private static void changeExistingProduct(RequestProductDto requestProductDto, Product isExisting) {
+        isExisting.setName(requestProductDto.name());
+        isExisting.setPrice(requestProductDto.price());
+        isExisting.setImageUrl(requestProductDto.imageUrl());
+        isExisting.setDescription(requestProductDto.description());
+        isExisting.setFeatured(requestProductDto.featured());
+    }
+
+    private static void validateProductNameDoesNotExist(Optional<Product> productByName) {
+        if (productByName.isPresent()){
+            throw new ProductAlreadyExistException(productByName.get().getName(), productByName.get().getPrice(), productByName.get().getId());
+        }
+    }
+
+    private static void changeRatingReviewCount(List<ProductReview> reviews, Product isExisting) {
         int updatedReviewCount = reviews.size();
         double averageRating = reviews.stream()
                 .mapToDouble(pr -> pr.getReview().getRating())
@@ -93,16 +118,5 @@ public class ProductService {
 
         isExisting.setReviewCount(updatedReviewCount);
         isExisting.setRating(averageRating);
-
-        return PRODUCT_REPOSITORY.save(isExisting);
     }
-
-
-    //  DELETE PRODUCT BY ID
-    public void deleteProductById(Long id){
-        Product isExisting = PRODUCT_REPOSITORY.findById(id)
-                .orElseThrow(() ->  new NoIdProductFoundException(id));
-        PRODUCT_REPOSITORY.deleteById(id);
-    }
-
 }

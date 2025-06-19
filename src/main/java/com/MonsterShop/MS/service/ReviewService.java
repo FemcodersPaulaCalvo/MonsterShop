@@ -33,8 +33,37 @@ public class ReviewService {
 
     //  GET REVIEWS BY A PRODUCT ID
     public List<ResponseReviewDto> getAllReviewsByProductId(Long productId){
+        Product isExistingProduct = getIsExistingProduct(productId);
+        return getReviewDtoList(isExistingProduct);
+    }
+
+
+    //  POST NEW REVIEW BY A PRODUCT
+    public ResponseReviewDto postNewReviewByProductId(Long productId, RequestReviewDto reviewDto){
+        Product isExistingProduct = getIsExistingProduct(productId);
+        Review newReview = MapperReviewDto.toEntity(reviewDto);
+        Review newReviewNoId = new Review(newReview.getUsername(),newReview.getRating(),newReview.getBody());
+
+        Review review = REVIEW_REPOSITORY.save(newReviewNoId);
+
+        ProductReview newProductReview = new ProductReview(isExistingProduct, newReviewNoId);
+
+        PRODUCT_REVIEW_REPOSITORY.save(newProductReview);
+        PRODUCT_SERVICE.updateProductReviewStats(productId);
+
+        return MapperReviewDto.fromEntity(review);
+
+    }
+
+
+    //  HELPER METHODS
+    private Product getIsExistingProduct(Long productId) {
         Product isExistingProduct = PRODUCT_REPOSITORY.findById(productId)
                 .orElseThrow(() -> new NoIdProductFoundException(productId));
+        return isExistingProduct;
+    }
+
+    private static List<ResponseReviewDto> getReviewDtoList(Product isExistingProduct) {
         return isExistingProduct.getProductReviews()
                 .stream()
                 .map(ProductReview::getReview)
@@ -45,23 +74,6 @@ public class ReviewService {
                     return MapperReviewDto.fromEntity(review);
                 })
                 .toList();
-    }
-
-    //  POST NEW REVIEW BY A PRODUCT
-    public ResponseReviewDto postNewReviewByProductId(Long productId, RequestReviewDto reviewDto){
-        Product isExistingProduct = PRODUCT_REPOSITORY.findById(productId)
-                .orElseThrow(() -> new NoIdProductFoundException(productId));
-        Review newReview = MapperReviewDto.toEntity(reviewDto);
-        Review newReviewNoId = new Review(newReview.getUsername(),newReview.getRating(),newReview.getBody());
-        Review review = REVIEW_REPOSITORY.save(newReviewNoId);
-
-        ProductReview newProductreview = new ProductReview(isExistingProduct, newReviewNoId);
-
-        PRODUCT_REVIEW_REPOSITORY.save(newProductreview);
-        Product updateProduct = PRODUCT_SERVICE.updateProductReviewStats(productId);
-
-        return MapperReviewDto.fromEntity(review);
-
     }
 
 }
