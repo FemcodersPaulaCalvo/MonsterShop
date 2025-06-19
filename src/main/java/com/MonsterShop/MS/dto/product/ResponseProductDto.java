@@ -1,4 +1,18 @@
 package com.MonsterShop.MS.dto.product;
 
-public record ResponseProductDto() {
+import com.MonsterShop.MS.dto.review.ResponseReviewDto;
+
+import java.util.List;
+
+public record ResponseProductDto(
+        Long id,
+        String name,
+        double price,
+        String imageUrl,
+        String description,
+        double rating,
+        int reviewCount,
+        boolean featured,
+        List<ResponseReviewDto> reviews
+) {
 }

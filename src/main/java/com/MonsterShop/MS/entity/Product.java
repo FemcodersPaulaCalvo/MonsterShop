@@ -1,8 +1,10 @@
 package com.MonsterShop.MS.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "products")
@@ -13,22 +15,39 @@ public class Product {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    String name;
+    @NotNull
+    private String name;
 
-    double price;
+    @NotNull
+    private double price;
 
-    String imageUrl;
+    @NotNull
+    private String imageUrl;
 
-    double rating;
+    @NotNull
+    private String description;
 
-    int reviewCount;
+    @Column(name = "rating", nullable = false)
+    private double rating;
 
-    boolean featured;
+    @Column(name = "review_count", nullable = false)
+    private int reviewCount;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @NotNull
+    private boolean featured;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ProductReview> productReviews = new ArrayList<>();
 
     public Product() {
+    }
+
+    public Product(String name, double price, String imageUrl, String description, boolean featured) {
+        this.name = name;
+        this.price = price;
+        this.imageUrl = imageUrl;
+        this.description = description;
+        this.featured = featured;
     }
 
     public Long getId() {
@@ -45,6 +64,10 @@ public class Product {
 
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public double getRating() {
@@ -73,6 +96,10 @@ public class Product {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public void setRating(double rating) {
